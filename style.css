@@ -1,0 +1,338 @@
+/* ===== Google Fonts Import ===== */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* ===== CSS Variables ===== */
+:root {
+    --primary-color: #6a59ff;
+    /* A nice modern purple */
+    --primary-color-dark: #5648d8;
+    --secondary-color: #f0f2f5;
+    --text-color-dark: #1d1d1f;
+    --text-color-light: #6e6e73;
+    --body-bg-color: #ffffff;
+    --card-bg-color: #7148d827;
+    --shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    --border-radius: 12px;
+    --transition-smooth: all 0.3s ease-in-out;
+}
+
+/* ===== General Setup & Reset ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--body-bg-color);
+    color: var(--text-color-dark);
+    line-height: 1.6;
+    transition: var(--transition-smooth);
+}
+
+/* ===== Navigation Bar ===== */
+nav {
+    padding: 1rem 2rem;
+    background-color: var(--card-bg-color);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+nav ul {
+    list-style-type: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2.5rem;
+}
+
+nav ul li {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--text-color-light);
+    cursor: pointer;
+    position: relative;
+    padding: 0.5rem 0;
+    transition: var(--transition-smooth);
+}
+
+/* Cool underline effect */
+nav ul li::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 3px;
+    background-color: var(--primary-color);
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: width 0.3s ease-in-out;
+    border-radius: 2px;
+}
+
+nav ul li:hover {
+    color: var(--text-color-dark);
+}
+
+nav ul li:hover::after {
+    width: 100%;
+}
+
+/* ===== Main Content ===== */
+main {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+    text-align: center;
+}
+
+h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+h4 {
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: var(--text-color-light);
+    margin-bottom: 3rem;
+}
+
+/* ===== Create Post Form ===== */
+.createPostContainer {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 3rem;
+}
+
+#content {
+    flex-grow: 1;
+    border: 2px solid #e1e1e1;
+    background-color: var(--secondary-color);
+    padding: 0.9rem 1.2rem;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    font-family: 'Poppins', sans-serif;
+    transition: var(--transition-smooth);
+}
+
+#content:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(106, 89, 255, 0.2);
+}
+
+#submitButton {
+    border: none;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0.9rem 1.8rem;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+#submitButton:hover {
+    background-color: var(--primary-color-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
+/* ===== Posts Container & Cards ===== */
+.loadAllPostsContainer {
+    display: grid;
+    /* This creates a responsive grid that fits as many columns as possible */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    text-align: left;
+}
+
+/* Style for individual posts that will be loaded */
+.newPost {
+    background-color: var(--card-bg-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 1.5rem;
+    /* This is for the smooth loading animation */
+    animation: fadeIn 0.5s ease-in-out forwards;
+    opacity: 0;
+}
+
+/* ===== Animations ===== */
+
+/* Use this animation for smooth content loading.
+   When you create a new post with JavaScript,
+   add the "post" class to the new element. */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* ===== Responsive Design ===== */
+
+/* For Tablets */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2.5rem;
+    }
+
+    nav ul {
+        gap: 1.5rem;
+    }
+
+    main {
+        padding: 0 1.5rem;
+    }
+}
+
+/* For Mobile Phones */
+@media (max-width: 500px) {
+    nav ul {
+        gap: 1rem;
+        flex-wrap: wrap;
+        /* Allows nav items to wrap to the next line */
+        justify-content: center;
+    }
+
+    nav ul li {
+        font-size: 1rem;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    h4 {
+        font-size: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .createPostContainer {
+        flex-direction: column;
+        /* Stacks the input and button vertically */
+    }
+
+    .loadAllPostsContainer {
+        /* On mobile, ensure at least some space on sides */
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ===== Post Detail Page Styles ===== */
+#post-detail-container {
+    max-width: 800px;
+    margin: 0 auto;
+    /* Centers the container */
+    padding: 2rem;
+    background-color: var(--card-bg-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    text-align: left;
+}
+
+.post-full-title {
+    font-size: 2.8rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--text-color-dark);
+    margin-bottom: 1rem;
+}
+
+.post-full-meta {
+    display: flex;
+    gap: 1.5rem;
+    font-size: 0.9rem;
+    color: var(--text-color-light);
+    margin-bottom: 1.5rem;
+}
+
+.post-divider {
+    border: none;
+    height: 1px;
+    background-color: #e1e1e1;
+    margin-bottom: 2rem;
+}
+
+.post-full-content p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #333;
+    white-space: pre-wrap;
+    /* Preserves line breaks from your input */
+}
+
+/* Styles for loading and error messages */
+.loading,
+.error-message {
+    font-size: 1.2rem;
+    color: var(--text-color-light);
+    text-align: center;
+    padding: 3rem;
+}
+
+.error-message {
+    color: #d93025;
+    /* A standard error red */
+}
+
+/* Styles for Edit/Delete buttons */
+.post-actions {
+    margin-top: 3rem;
+    display: flex;
+    gap: 1rem;
+    border-top: 1px solid #e1e1e1;
+    padding-top: 1.5rem;
+}
+
+.action-btn {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    border: 1px solid transparent;
+}
+
+.edit-btn {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.edit-btn:hover {
+    background-color: var(--primary-color-dark);
+    transform: translateY(-2px);
+}
+
+.delete-btn {
+    background-color: transparent;
+    color: #d93025;
+    border-color: #d93025;
+}
+
+.delete-btn:hover {
+    background-color: #d93025;
+    color: white;
+}
+
+/* Responsive adjustments for the detail page */
+@media(max-width: 768px) {
+    .post-full-title {
+        font-size: 2.2rem;
+    }
+}

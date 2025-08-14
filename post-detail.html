@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post Detail | BlogiFy</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <nav>
+        <ul>
+            <li id="home">Home</li>
+            <li>About</li>
+            <li>Contact Us</li>
+            <li id="loadPosts" onclick="window.location.href='index.html'">Load All Posts</li>
+        </ul>
+    </nav>
+
+    <main>
+        <div id="post-detail-container">
+            <div class="loading">Loading post...</div>
+        </div>
+    </main>
+    <script>
+
+        document.addEventListener("DOMContentLoaded", () => {
+            let BASE;
+
+            if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+                BASE = "http://localhost:8081"; // local backend
+            } else {
+                BASE = "https://blogify-bk6w.onrender.com"; // render backend
+            }
+            const postDetailContainer = document.getElementById('post-detail-container');
+
+            // Function to get the post ID from the URL query parameter
+            const getPostIdFromUrl = () => {
+                const params = new URLSearchParams(window.location.search);
+                return params.get('id');
+            };
+
+            // Function to fetch post data from the API
+            const fetchPostDetails = async (postId) => {
+                // Update this URL to match your API endpoint for fetching a single post
+                const url = `${BASE}/api/posts/getPostById/${postId}`;
+
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        throw new Error(`Failed to fetch post. Status: ${response.status}`);
+                    }
+                    const post = await response.json();
+                    displayPost(post);
+                } catch (error) {
+                    console.error("Error fetching post details:", error);
+                    postDetailContainer.innerHTML = `<div class="error-message">Could not load post. Please try again later.</div>`;
+                }
+            };
+
+            // Function to display the fetched post data in the HTML
+            const displayPost = (post) => {
+                // Update the page title
+                document.title = `${post.title} | BlogiFy`;
+
+                // Format the date for better readability
+                const formattedDate = new Date(post.createdAt).toLocaleString('en-IN', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                // Create the HTML structure for the post
+                postDetailContainer.innerHTML = `
+            <article class="post-full">
+                <h1 class="post-full-title">${post.title}</h1>
+                
+                <section class="post-full-meta">
+                    <span class="author">By: ${post.author}</span>
+                    <span class="date">Published on: ${formattedDate}</span>
+                </section>
+                
+                <hr class="post-divider">
+                
+                <section class="post-full-content">
+                    <p>${post.content}</p>
+                </section>
+
+                <section class="post-actions">
+                    <button class="action-btn edit-btn">Edit Post</button>
+                    <button class="action-btn delete-btn">Delete Post</button>
+                </section>
+            </article>
+        `;
+                const deletePost = document.querySelector('.delete-btn');
+
+
+                if (deletePost) {
+
+
+                    deletePost.addEventListener('click', async () => {
+                        const confirmation = confirm("Are you sure you want to delete this post? This action cannot be undone.");
+                        if (confirmation) {
+                            try {
+                                if (postId) {
+                                    const response = await fetch(`${BASE}/api/posts/deletePostById/${postId}`, {
+                                        method: "DELETE"
+                                    });
+                                    if (!response.ok) {
+                                        throw new Error(`Failed to delete post. Status: ${response.status}`);
+                                    }
+                                    const result = await response.json();
+                                    alert(result.message);
+                                    window.location.href = "/index.html";
+                                }
+                            }
+                            catch (error) {
+                                console.error("Error deleting post details:", error);
+                                postDetailContainer.innerHTML = `<div class="error-message">Could not delete post. Please try again later.</div>`;
+                            }
+                        }
+
+                    });
+                }
+            };
+
+            // --- Main Execution ---
+            const postId = getPostIdFromUrl();
+            if (postId) {
+                fetchPostDetails(postId);
+            } else {
+                postDetailContainer.innerHTML = `<div class="error-message">No post ID provided.</div>`;
+                console.error("No post ID found in URL.");
+            }
+
+        });
+
+    </script>
+    <script src="script.js"></script>
+</body>
+
+</html>
