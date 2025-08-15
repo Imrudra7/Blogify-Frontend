@@ -88,7 +88,8 @@
                 <hr class="post-divider">
                 
                 <section class="post-full-content">
-                    <p>${post.content}</p>
+                    <p id="blog-content">${post.content}</p>
+                    <textarea type="text" id="newContent" class="editor" placeholder="Write Something..." style="display:none"></textarea>
                 </section>
 
                 <section class="post-actions">
@@ -123,6 +124,78 @@
                                 console.error("Error deleting post details:", error);
                                 postDetailContainer.innerHTML = `<div class="error-message">Could not delete post. Please try again later.</div>`;
                             }
+                        }
+
+                    });
+                }
+                const editPost = document.querySelector('.edit-btn');
+
+
+                if (editPost) {
+                    editPost.addEventListener('click', async () => {
+                        const blog = document.getElementById('blog-content');
+                        const input = document.getElementById('newContent');
+
+
+
+                        if (editPost.innerText == 'Edit Post') {
+                            input.value = blog.innerText;
+                            blog.style.display = "none";
+                            input.style.display = "block";
+                            input.focus();
+                            input.setSelectionRange(input.value.length, input.value.length);
+                            editPost.innerText = "Save";
+                        } else {
+                            const confirmit = confirm('Are you sure?');
+                            if (confirmit) {
+                                const newValue = input.value.trim();
+                                if (newValue == blog.innerText) {
+                                    return;
+                                }
+
+
+                                try {
+
+                                    if (postId) {
+                                        const updateResponse = await fetch(`${BASE}/api/newPosts/update-post`, {
+                                            method: "PUT",
+                                            headers: {
+                                                "Content-Type": "application/json"
+                                            },
+                                            body: JSON.stringify(
+                                                {
+                                                    id: postId,
+                                                    content: newValue
+                                                }
+                                            )
+                                        });
+                                        const data = await updateResponse.json();
+
+                                        if (updateResponse.ok || updateResponse.status === 200) {
+                                            alert(data.message)
+
+                                            blog.innerText = newValue || blog.innerText;
+                                            blog.style.display = "block";
+                                            input.style.display = "none";
+                                            editPost.innerText = "Edit Post";
+                                        } else if (updateResponse.status === 304) {
+                                            alert(data.message);
+                                            console.log("Not Modified:", data.message);
+                                        } else if (updateResponse.status === 404) {
+                                            alert(data.message);
+                                            console.log("Not Found:", data.message);
+                                        } else {
+                                            alert(data.message);
+                                            console.log("Other error:", data.message);
+                                        }
+                                    }
+                                } catch (error) {
+                                    alert("Someting went wrong.")
+                                    console.error(error);
+                                }
+                            }
+
+
                         }
 
                     });

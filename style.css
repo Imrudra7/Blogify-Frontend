@@ -276,6 +276,49 @@ h4 {
     /* Preserves line breaks from your input */
 }
 
+#newContent {
+    /* Match the size of the content area */
+    width: 100%;
+    box-sizing: border-box;
+    /* Ensures padding and border are included in the width */
+
+    /* Set a minimum height for a good starting size and allow for growth */
+    min-height: 200px;
+    height: auto;
+    /* Allows the element to grow with content */
+
+    /* Text and alignment properties */
+    padding: 15px;
+    /* Adds space inside the box */
+    padding-bottom: 30px;
+    /* Increased padding at the bottom for extra whitespace */
+    text-align: left;
+    /* Aligns text to the left */
+    vertical-align: top;
+    /* Makes text start from the top of the box */
+
+    /* Visual styling */
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #333;
+    background-color: #f9f9f9;
+    resize: vertical;
+    /* Allows the user to resize the textarea vertically */
+
+    /* Focus and transitions */
+    transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+#newContent:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    outline: none;
+}
+
+
 /* Styles for loading and error messages */
 .loading,
 .error-message {
