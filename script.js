@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (homeLink) {
         homeLink.addEventListener('click', () => {
-            window.location.href = '/index.html';
+            window.location.href = '/';
         });
     }
     if (submitPost) {
