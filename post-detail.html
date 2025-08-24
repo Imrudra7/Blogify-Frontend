@@ -25,6 +25,14 @@
             <div class="loading">Loading post...</div>
         </div>
     </main>
+    <!-- Loader HTML -->
+    <div class="loader-overlay" id="loader">
+        <div class="loader-dots">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+    </div>
     <script>
 
         document.addEventListener("DOMContentLoaded", () => {
@@ -34,6 +42,25 @@
                 BASE = "http://localhost:8081"; // local backend
             } else {
                 BASE = "https://blogify-bk6w.onrender.com"; // render backend
+            }
+            const loader = document.getElementById('loader');
+
+            /**
+             * Displays the loader overlay.
+             */
+            function showLoader() {
+                if (loader) {
+                    loader.classList.add('visible');
+                }
+            }
+
+            /**
+             * Hides the loader overlay.
+             */
+            function hideLoader() {
+                if (loader) {
+                    loader.classList.remove('visible');
+                }
             }
             const postDetailContainer = document.getElementById('post-detail-container');
 
@@ -45,17 +72,20 @@
 
             // Function to fetch post data from the API
             const fetchPostDetails = async (postId) => {
+                showLoader();
                 // Update this URL to match your API endpoint for fetching a single post
                 const url = `${BASE}/api/posts/getPostById/${postId}`;
 
                 try {
                     const response = await fetch(url);
                     if (!response.ok) {
+                        hideLoader();
                         throw new Error(`Failed to fetch post. Status: ${response.status}`);
                     }
                     const post = await response.json();
                     displayPost(post);
                 } catch (error) {
+                    hideLoader();
                     console.error("Error fetching post details:", error);
                     postDetailContainer.innerHTML = `<div class="error-message">Could not load post. Please try again later.</div>`;
                 }
@@ -98,6 +128,7 @@
                 </section>
             </article>
         `;
+                hideLoader();
                 const deletePost = document.querySelector('.delete-btn');
 
 
@@ -107,20 +138,24 @@
                     deletePost.addEventListener('click', async () => {
                         const confirmation = confirm("Are you sure you want to delete this post? This action cannot be undone.");
                         if (confirmation) {
+                            showLoader();
                             try {
                                 if (postId) {
                                     const response = await fetch(`${BASE}/api/posts/deletePostById/${postId}`, {
                                         method: "DELETE"
                                     });
                                     if (!response.ok) {
+                                        hideLoader();
                                         throw new Error(`Failed to delete post. Status: ${response.status}`);
                                     }
                                     const result = await response.json();
                                     alert(result.message);
+                                    hideLoader();
                                     window.location.href = "/";
                                 }
                             }
                             catch (error) {
+                                hideLoader();
                                 console.error("Error deleting post details:", error);
                                 postDetailContainer.innerHTML = `<div class="error-message">Could not delete post. Please try again later.</div>`;
                             }
@@ -139,17 +174,21 @@
 
 
                         if (editPost.innerText == 'Edit Post') {
+                            showLoader();
                             input.value = blog.innerText;
                             blog.style.display = "none";
                             input.style.display = "block";
                             input.focus();
                             input.setSelectionRange(input.value.length, input.value.length);
                             editPost.innerText = "Save";
+                            hideLoader();
                         } else {
                             const confirmit = confirm('Are you sure?');
                             if (confirmit) {
+                                showLoader();
                                 const newValue = input.value.trim();
                                 if (newValue == blog.innerText) {
+                                    hideLoader();
                                     return;
                                 }
 
@@ -157,6 +196,7 @@
                                 try {
 
                                     if (postId) {
+
                                         const updateResponse = await fetch(`${BASE}/api/newPosts/update-post`, {
                                             method: "PUT",
                                             headers: {
@@ -178,19 +218,24 @@
                                             blog.style.display = "block";
                                             input.style.display = "none";
                                             editPost.innerText = "Edit Post";
+                                            hideLoader();
                                         } else if (updateResponse.status === 304) {
                                             alert(data.message);
+                                            hideLoader();
                                             console.log("Not Modified:", data.message);
                                         } else if (updateResponse.status === 404) {
                                             alert(data.message);
+                                            hideLoader();
                                             console.log("Not Found:", data.message);
                                         } else {
                                             alert(data.message);
+                                            hideLoader();
                                             console.log("Other error:", data.message);
                                         }
                                     }
                                 } catch (error) {
-                                    alert("Someting went wrong.")
+                                    alert("Someting went wrong.");
+                                    hideLoader();
                                     console.error(error);
                                 }
                             }

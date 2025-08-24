@@ -7,7 +7,38 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
         BASE_URL = "https://blogify-bk6w.onrender.com"; // render backend
     }
+    const loader = document.getElementById('loader');
 
+    /**
+     * Displays the loader overlay.
+     */
+    function showLoader() {
+        if (loader) {
+            loader.classList.add('visible');
+        }
+    }
+
+    /**
+     * Hides the loader overlay.
+     */
+    function hideLoader() {
+        if (loader) {
+            loader.classList.remove('visible');
+        }
+    }
+
+    // --- Example Usage ---
+    // To show the loader before a data fetch:
+    // showLoader();
+    // fetch('your-api-endpoint')
+    //   .then(response => response.json())
+    //   .then(data => {
+    //     // process your data
+    //   })
+    //   .finally(() => {
+    //     // To hide the loader after the fetch is complete:
+    //     hideLoader();
+    //   });
 
     const submitPost = document.getElementById("submitButton");
     const loadPosts = document.getElementById("loadPosts");
@@ -23,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (submitPost) {
         submitPost.addEventListener("click", async (e) => {
             e.preventDefault();
-
+            showLoader();
             const content = document.getElementById("content").value;
 
             if (content) {
@@ -50,15 +81,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
                         if (response.ok) {
                             const data = await response.json();
+                            hideLoader();
                             console.log("✅ Post Created Successfully.", data);
                             document.getElementById("content").value = "";
                         } else {
+                            hideLoader();
                             console.log("❌ Something went wrong", await response.text());
                         }
                     } catch (err) {
+                        hideLoader();
                         console.error("⚠️ Error:", err);
                     }
                 } else {
+                    hideLoader();
                     console.log("No author or title provided");
                 }
             }
@@ -67,6 +102,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (loadPosts) {
         loadPosts.addEventListener('click', async () => {
+            showLoader();
             const response = await fetch(`${BASE_URL}/api/posts/getAllPosts`);
 
 
@@ -75,6 +111,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
                     if (!response.ok) {
+                        hideLoader();
+
                         console.log("❌ Failed to fetch posts:", response.status);
                         return;
                     }
@@ -85,10 +123,13 @@ document.addEventListener("DOMContentLoaded", () => {
                         console.log(`✅ ${posts.length} posts found:`, posts);
                         setPostData(posts);
                     } else {
+                        hideLoader();
+
                         console.log("⚠️ No posts found");
                     }
 
                 } catch (error) {
+                    hideLoader();
                     console.error("⚠️ Error fetching posts:", error);
                 }
             }
@@ -114,26 +155,31 @@ document.addEventListener("DOMContentLoaded", () => {
                     hour: '2-digit',
                     minute: '2-digit'
                 });
+                const words = element.content.split(' ');
+                const isLongContent = words.length > 25;
+                const truncatedContent = isLongContent ? words.slice(0, 25).join(' ') + '...' : element.content;
                 postDiv.innerHTML = `
                                 <h2 class="postTitle">${element.title}</h2>
-                                <p class="postContent">${element.content}</p>
+                                <p class="postContent">${truncatedContent}</p>
                                 <p class="postAuthor">Author: ${element.author}</p>
                                 <p class="postStatus">Status: ${element.status}</p>
                                 <p class="postCreatedAt">Created At: ${formattedDate}</p>
                                 `;
                 loadDiv.appendChild(postDiv);
+                hideLoader();
             }
         }
     }
 
     if (postsContainer) {
         postsContainer.addEventListener('click', (event) => {
-
+            showLoader();
             const clickedPost = event.target.closest('.newPost');
 
             if (clickedPost) {
                 const postId = clickedPost.dataset.id;
                 console.log(`Post clicked! Navigating to post with ID: ${postId}`);
+                hideLoader();
                 window.location.href = `post-detail.html?id=${postId}`;
             }
         });

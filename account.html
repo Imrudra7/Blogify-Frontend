@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blogify - Account</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* --- A simple, modern reset --- */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* --- Main Body and Layout --- */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+            background-color: #f0f2f5;
+            color: #1c1e21;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        /* --- Main Account Container --- */
+        .account-container {
+            position: relative;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 850px;
+            /* Increased width for side-by-side layout */
+            min-height: 550px;
+            overflow: hidden;
+            /* Important for the sliding effect */
+        }
+
+        /* --- Form Sections (Login & Register) --- */
+        .form-container {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            transition: all 0.6s ease-in-out;
+        }
+
+        .sign-in-container {
+            left: 0;
+            width: 50%;
+            z-index: 2;
+        }
+
+        .sign-up-container {
+            left: 0;
+            width: 50%;
+            opacity: 0;
+            z-index: 1;
+        }
+
+        /* --- Form Styling --- */
+        form {
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            padding: 0 50px;
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        h1 {
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            color: #2c3e50;
+        }
+
+        .social-container {
+            margin: 20px 0;
+        }
+
+        .social-container a {
+            border: 1px solid #ddd;
+            border-radius: 50%;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 5px;
+            height: 40px;
+            width: 40px;
+            color: #333;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .social-container a:hover {
+            background-color: #f0f2f5;
+        }
+
+        span {
+            font-size: 12px;
+            color: #555;
+            margin-bottom: 1rem;
+        }
+
+        .form-control {
+            background-color: #eee;
+            border: none;
+            padding: 12px 15px;
+            margin: 8px 0;
+            width: 100%;
+            border-radius: 8px;
+        }
+
+        .form-control:focus {
+            outline: 2px solid #3498db;
+        }
+
+        a.forgot-password {
+            color: #333;
+            font-size: 14px;
+            text-decoration: none;
+            margin: 15px 0;
+        }
+
+        a.forgot-password:hover {
+            text-decoration: underline;
+        }
+
+        button {
+            border-radius: 20px;
+            border: 1px solid #2980b9;
+            background: linear-gradient(to right, #3498db, #2980b9);
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 12px 45px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: transform 80ms ease-in;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        button:focus {
+            outline: none;
+        }
+
+        button.ghost {
+            background-color: transparent;
+            border-color: #ffffff;
+        }
+
+        /* --- Overlay Styling (The moving part) --- */
+        .overlay-container {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 50%;
+            height: 100%;
+            overflow: hidden;
+            transition: transform 0.6s ease-in-out;
+            z-index: 100;
+        }
+
+        .overlay {
+            background: #2980b9;
+            background: linear-gradient(to right, #2980b9, #3498db);
+            color: #ffffff;
+            position: relative;
+            left: -100%;
+            height: 100%;
+            width: 200%;
+            transform: translateX(0);
+            transition: transform 0.6s ease-in-out;
+        }
+
+        .overlay-panel {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 0 40px;
+            text-align: center;
+            top: 0;
+            height: 100%;
+            width: 50%;
+            transform: translateX(0);
+            transition: transform 0.6s ease-in-out;
+        }
+
+        .overlay-panel p {
+            font-size: 14px;
+            font-weight: 100;
+            line-height: 20px;
+            letter-spacing: 0.5px;
+            margin: 20px 0 30px;
+        }
+
+        .overlay-left {
+            transform: translateX(-20%);
+        }
+
+        .overlay-right {
+            right: 0;
+            transform: translateX(0);
+        }
+
+        /* --- Animation / Toggle Logic --- */
+        /* Move sign-in to the right */
+        .account-container.right-panel-active .sign-in-container {
+            transform: translateX(100%);
+        }
+
+        /* Move overlay to the left */
+        .account-container.right-panel-active .overlay-container {
+            transform: translateX(-100%);
+        }
+
+        /* Bring sign-up over sign-in */
+        .account-container.right-panel-active .sign-up-container {
+            transform: translateX(100%);
+            opacity: 1;
+            z-index: 5;
+            animation: show 0.6s;
+        }
+
+        /* Move overlay back to the right */
+        .account-container.right-panel-active .overlay {
+            transform: translateX(50%);
+        }
+
+        .account-container.right-panel-active .overlay-left {
+            transform: translateX(0);
+        }
+
+        .account-container.right-panel-active .overlay-right {
+            transform: translateX(20%);
+        }
+
+        @keyframes show {
+
+            0%,
+            49.99% {
+                opacity: 0;
+                z-index: 1;
+            }
+
+            50%,
+            100% {
+                opacity: 1;
+                z-index: 5;
+            }
+        }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 768px) {
+            .account-container {
+                max-width: 100%;
+                min-height: 600px;
+            }
+
+            .form-container {
+                width: 100%;
+            }
+
+            .sign-in-container {
+                /* On mobile, sign-in is visible by default */
+                opacity: 1;
+                z-index: 2;
+            }
+
+            .sign-up-container {
+                /* Sign-up is hidden by default */
+                opacity: 0;
+                z-index: 1;
+            }
+
+            .overlay-container {
+                display: none;
+                /* Hide the fancy overlay on mobile */
+            }
+
+            /* JS will toggle visibility now */
+            .sign-in-container.hidden {
+                display: none;
+            }
+
+            .sign-up-container.visible {
+                opacity: 1;
+                z-index: 2;
+            }
+
+            form {
+                padding: 0 25px;
+            }
+
+            /* We need a mobile toggle now */
+            .mobile-toggle {
+                display: block;
+                margin-top: 1.5rem;
+                font-size: 14px;
+                color: #2980b9;
+                cursor: pointer;
+                font-weight: 500;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .mobile-toggle {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="account-container" id="account-container">
+        <!-- REGISTRATION FORM -->
+        <div class="form-container sign-up-container" id="sign-up-form">
+            <form action="#">
+                <h1>Create Account</h1>
+                <div class="social-container">
+                    <a href="#" class="social" title="Sign up with Google">G</a>
+                    <a href="#" class="social" title="Sign up with Facebook">F</a>
+                    <a href="#" class="social" title="Sign up with LinkedIn">in</a>
+                </div>
+                <span>or use your email for registration</span>
+                <input type="text" placeholder="Name" class="form-control" />
+                <input type="email" placeholder="Email" class="form-control" />
+                <input type="password" placeholder="Password" class="form-control" />
+                <button type="submit" style="margin-top: 1rem;">Sign Up</button>
+                <a href="#" class="mobile-toggle" id="signInMobile">Already have an account? Sign In</a>
+            </form>
+        </div>
+
+        <!-- LOGIN FORM -->
+        <div class="form-container sign-in-container" id="sign-in-form">
+            <form action="#">
+                <h1>Sign in</h1>
+                <div class="social-container">
+                    <a href="#" class="social" title="Sign in with Google">G</a>
+                    <a href="#" class="social" title="Sign in with Facebook">F</a>
+                    <a href="#" class="social" title="Sign in with LinkedIn">in</a>
+                </div>
+                <span>or use your account</span>
+                <input type="email" placeholder="Email" class="form-control" />
+                <input type="password" placeholder="Password" class="form-control" />
+                <a href="#" class="forgot-password">Forgot your password?</a>
+                <button type="submit">Sign In</button>
+                <a href="#" class="mobile-toggle" id="signUpMobile">Don't have an account? Sign Up</a>
+            </form>
+        </div>
+
+        <!-- OVERLAY (for desktop animation) -->
+        <div class="overlay-container">
+            <div class="overlay">
+                <div class="overlay-panel overlay-left">
+                    <h1>Welcome Back!</h1>
+                    <p>To keep connected with us please login with your personal info</p>
+                    <button class="ghost" id="signIn">Sign In</button>
+                </div>
+                <div class="overlay-panel overlay-right">
+                    <h1>Hello, Friend!</h1>
+                    <p>Enter your personal details and start your journey with us</p>
+                    <button class="ghost" id="signUp">Sign Up</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Loader HTML -->
+    <div class="loader-overlay" id="loader">
+        <div class="loader-dots">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+    </div>
+    <script>
+        // Get the buttons and container
+        const signUpButton = document.getElementById('signUp');
+        const signInButton = document.getElementById('signIn');
+        const container = document.getElementById('account-container');
+
+        // Mobile toggles
+        const signUpMobileButton = document.getElementById('signUpMobile');
+        const signInMobileButton = document.getElementById('signInMobile');
+        const signInForm = document.getElementById('sign-in-form');
+        const signUpForm = document.getElementById('sign-up-form');
+
+        // Desktop toggle listeners
+        if (signUpButton && signInButton) {
+            signUpButton.addEventListener('click', () => {
+                container.classList.add('right-panel-active');
+            });
+
+            signInButton.addEventListener('click', () => {
+                container.classList.remove('right-panel-active');
+            });
+        }
+
+        // Mobile toggle listeners
+        if (signUpMobileButton && signInMobileButton) {
+            signUpMobileButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                signInForm.classList.add('hidden');
+                signUpForm.classList.add('visible');
+                signUpForm.style.transform = 'translateX(0%)';
+                signInForm.style.transform = 'translateX(0%)';
+            });
+
+            signInMobileButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                signInForm.classList.remove('hidden');
+                signUpForm.classList.remove('visible');
+                signUpForm.style.transform = 'translateX(0%)';
+                signInForm.style.transform = 'translateX(0%)';
+            });
+        }
+    </script>
+    <script src="script.js"></script>
+</body>
+
+</html>
