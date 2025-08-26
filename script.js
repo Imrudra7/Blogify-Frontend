@@ -184,4 +184,91 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
+    // SIGN UP FORM
+    const signUpForm = document.querySelector("#sign-up-form form");
+    if (signUpForm) {
+
+
+        signUpForm.addEventListener("submit", async (e) => {
+            e.preventDefault(); // stop page reload
+
+            // get values
+            const name = signUpForm.querySelector('input[placeholder="Name"]').value.trim();
+            const email = signUpForm.querySelector('input[placeholder="Email"]').value.trim();
+            const password = signUpForm.querySelector('input[placeholder="Password"]').value.trim();
+
+            const data = { name, email, password, status: "Active" };
+            console.log("Sign Up Data:", data);
+
+            try {
+                const response = await fetch(`${BASE_URL}/api/account/registerUser`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                alert(result.message);
+            } catch (err) {
+                console.error("Error:", err);
+            }
+        });
+    }
+    // SIGN IN FORM
+    const signInForm = document.querySelector("#sign-in-form form");
+    if (signInForm) {
+        signInForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const email = signInForm.querySelector('input[placeholder="Email"]').value.trim();
+            const password = signInForm.querySelector('input[placeholder="Password"]').value.trim();
+
+            const data = { email, password };
+            console.log("Sign In Data:", data);
+
+            try {
+                const response = await fetch(`${BASE_URL}/api/account/login`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                alert(result.message);
+                console.log(result);
+
+                if (response.status === 200 || response.status === 201) {
+                    window.location.href = "/";
+                    window.localStorage.setItem("authToken", "Hi hello");
+                } else {
+                    window.location.reload();
+                }
+
+            } catch (err) {
+                console.error("Error:", err);
+            }
+        });
+    }
+    const account = document.querySelector(".account-button");
+
+    if (account) {
+        // Yahan check karo ki user login hai ya nahi
+        const token = localStorage.getItem("authToken");
+
+        if (token) {
+            // Agar login hai to logout button dikhao
+            account.textContent = `Log out`;
+
+            // Logout button ka event listener
+            account.addEventListener("click", () => {
+                if(account.textContent=="Log out") {
+                    localStorage.removeItem("authToken"); // token clear
+                alert("Logged out successfully!");
+                window.location.href = "/account.html"; // redirect to login page
+                }
+                
+            });
+        }
+    }
+
 });
