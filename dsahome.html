@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DSA Tracker</title>
+    <link rel="stylesheet" href="dsacss.css" />
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="title-wrap">
+                <h1 class="main-heading">DSA Tracker</h1>
+                <p class="sub">Track progress across steps • difficulty • links</p>
+            </div>
+
+            <div class="header-actions">
+                <input id="search-input" class="search" type="search" placeholder="Search question..."
+                    aria-label="Search question" />
+                <button id="theme-toggle" class="btn">Toggle Theme</button>
+            </div>
+        </header>
+
+        <!-- Toolbar -->
+        <div class="toolbar">
+            <div class="filters">
+                <label class="filter">
+                    <span>Difficulty:</span>
+                    <select id="filter-difficulty">
+                        <option value="ALL">All</option>
+                        <option value="Easy">Easy</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Hard">Hard</option>
+                    </select>
+                </label>
+
+                <label class="filter">
+                    <span>Section:</span>
+                    <select id="filter-section">
+                        <option value="ALL">All</option>
+                        <!-- sections will be injected dynamically if you want -->
+                    </select>
+                </label>
+            </div>
+
+            <div class="stats">
+                <span id="stat-total" class="badge">Total: 0</span>
+                <span id="stat-easy" class="badge easy">Easy: 0</span>
+                <span id="stat-medium" class="badge medium">Medium: 0</span>
+                <span id="stat-hard" class="badge hard">Hard: 0</span>
+            </div>
+        </div>
+
+        <!-- Status -->
+        <div id="status" class="status" role="status" aria-live="polite">
+            <div id="loader" class="loader" hidden></div>
+            <div id="error" class="error" hidden></div>
+        </div>
+
+        <!-- Sections get injected here -->
+        <main id="sections-container" class="sections-container">
+            <!-- Rendered by dsascript.js -->
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <small>Built by Rudra • LocalStorage progress • Theme friendly</small>
+        </footer>
+    </div>
+
+    <script>
+        // tiny theme toggle for HTML data-attr
+        document.addEventListener('DOMContentLoaded', () => {
+            const btn = document.getElementById('theme-toggle');
+            const htmlEl = document.documentElement;
+            btn.addEventListener('click', () => {
+                htmlEl.setAttribute(
+                    'data-theme',
+                    htmlEl.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'
+                );
+            });
+        });
+    </script>
+
+    <!-- Your dynamic renderer -->
+    <script src="dsascript.js"></script>
+</body>
+
+</html>
