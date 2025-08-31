@@ -8,7 +8,21 @@ document.addEventListener("DOMContentLoaded", () => {
         BASE_URL = "https://blogify-bk6w.onrender.com"; // render backend
     }
     const loader = document.getElementById('loader');
+    // URL ke query param se token uthao
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get("token");
 
+    if (token) {
+        console.log("JWT Token:", token);
+
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        window.localStorage.setItem("user", JSON.stringify(payload));
+        localStorage.setItem("authToken", token);
+
+
+    } else {
+        console.log("No token found in URL.");
+    }
     /**
      * Displays the loader overlay.
      */
@@ -238,8 +252,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.log(result);
 
                 if (response.status === 200 || response.status === 201) {
+                    const token = result.token; // <-- backend se JWT aayega
+                    window.localStorage.setItem("authToken", token);
+
+                    // JWT decode karke user info save karna
+                    const payload = JSON.parse(atob(token.split(".")[1]));
+                    window.localStorage.setItem("user", JSON.stringify(payload));
+
+                    alert("Login successful!");
                     window.location.href = "/";
-                    window.localStorage.setItem("authToken", "Hi hello");
                 } else {
                     window.location.reload();
                 }
@@ -256,17 +277,19 @@ document.addEventListener("DOMContentLoaded", () => {
         const token = localStorage.getItem("authToken");
 
         if (token) {
-            // Agar login hai to logout button dikhao
+        
             account.textContent = `Log out`;
 
-            // Logout button ka event listener
+            
             account.addEventListener("click", () => {
-                if(account.textContent=="Log out") {
-                    localStorage.removeItem("authToken"); // token clear
-                alert("Logged out successfully!");
-                window.location.href = "/account.html"; // redirect to login page
+                if (account.textContent == "Log out") {
+                    localStorage.removeItem("user");
+                    localStorage.removeItem("authToken");
+                    
+                    alert("Logged out successfully!");
+                    window.location.href = "/account.html"; // redirect to login page
                 }
-                
+
             });
         }
     }
