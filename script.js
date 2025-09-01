@@ -6,7 +6,9 @@ document.addEventListener("DOMContentLoaded", () => {
         BASE_URL = "http://localhost:8081"; // local backend
     } else {
         BASE_URL = "https://blogify-bk6w.onrender.com"; // render backend
-    }
+    } // prod backend
+
+document.getElementById("google-login").href = `${BASE_URL}/oauth2/authorization/google`;
     const loader = document.getElementById('loader');
     // URL ke query param se token uthao
     const urlParams = new URLSearchParams(window.location.search);
