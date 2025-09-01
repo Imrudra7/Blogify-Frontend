@@ -83,6 +83,7 @@
 
         .social-container {
             margin: 20px 0;
+            display: flex;
         }
 
         .social-container a {
@@ -321,6 +322,17 @@
                 display: none;
             }
         }
+
+        .google-icon {
+            width: 30px;
+            /* desired width */
+            height: 30px;
+            /* maintain square aspect ratio */
+            object-fit: contain;
+            /* ensures image scales properly */
+            vertical-align: middle;
+            /* optional, aligns nicely with text if any */
+        }
     </style>
 </head>
 
@@ -350,8 +362,10 @@
             <form action="#">
                 <h1>Sign in</h1>
                 <div class="social-container">
-                    <a href="#" class="social" id="google-login"
-                        title="Sign in with Google">G</a>
+                    <a href="#" class="social" id="google-login" title="Sign in with Google">
+                        <img src="/images/pngtree-google-internet-icon-vector-png-image_9183287.png" alt="Google"
+                            class="google-icon social">
+                    </a>
                     <a href="#" class="social" title="Sign in with Facebook">F</a>
                     <a href="#" class="social" title="Sign in with LinkedIn">in</a>
                 </div>

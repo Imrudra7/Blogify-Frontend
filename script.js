@@ -256,7 +256,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.log(result);
 
                 if (response.status === 200 || response.status === 201) {
-                    const token = result.token; // <-- backend se JWT aayega
+                    const token = result.object; // <-- backend se JWT aayega
                     window.localStorage.setItem("authToken", token);
 
                     // JWT decode karke user info save karna
