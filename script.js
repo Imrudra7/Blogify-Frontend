@@ -8,7 +8,9 @@ document.addEventListener("DOMContentLoaded", () => {
         BASE_URL = "https://blogify-bk6w.onrender.com"; // render backend
     } // prod backend
 
-document.getElementById("google-login").href = `${BASE_URL}/oauth2/authorization/google`;
+    const google = document.getElementById("google-login");
+    if (google)
+        google.href = `${BASE_URL}/oauth2/authorization/google`;
     const loader = document.getElementById('loader');
     // URL ke query param se token uthao
     const urlParams = new URLSearchParams(window.location.search);
@@ -279,15 +281,15 @@ document.getElementById("google-login").href = `${BASE_URL}/oauth2/authorization
         const token = localStorage.getItem("authToken");
 
         if (token) {
-        
+
             account.textContent = `Log out`;
 
-            
+
             account.addEventListener("click", () => {
                 if (account.textContent == "Log out") {
                     localStorage.removeItem("user");
                     localStorage.removeItem("authToken");
-                    
+
                     alert("Logged out successfully!");
                     window.location.href = "/account.html"; // redirect to login page
                 }
