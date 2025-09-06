@@ -223,6 +223,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // Attach event listeners ONCE
     if (sectionsContainer) {
         sectionsContainer.addEventListener("change", handleCheckboxChange);
+        sectionsContainer.addEventListener("change", updateCountOnScreen);
+        sectionsContainer.addEventListener("change", updateSectionToggleOnScreen);
     }
     if (questionForm) {
         questionForm.addEventListener("submit", handleFormSubmit);
@@ -255,13 +257,71 @@ document.addEventListener("DOMContentLoaded", () => {
                 const nameEl = cb.closest(".question-item").querySelector(".question-name");
                 nameEl.classList.toggle("done", cb.checked);
             });
-
-            console.log("User progress applied:", selectedIds);
+            updateCountOnScreen();
+            updateSectionToggleOnScreen();
         } catch (err) {
             console.error("Error syncing user progress:", err);
         }
     }
 
+    function updateCountOnScreen() {
+        let easyCount = 0;
+        let mediumCnt = 0;
+        let hardCnt = 0;
+        let totalCnt = 0;
+        let arr = document.getElementsByClassName('question-check');
+        for (let c of arr) {
+            if (c.checked) {
+
+                const dataID = c.dataset.id;
+                if (dataID.includes('Easy')) easyCount++;
+                else if (dataID.includes('Medium')) mediumCnt++;
+                else hardCnt++;
+            }
+        }
+        totalCnt = easyCount + mediumCnt + hardCnt;
+        document.getElementById('stat-total').innerText = `Total : ${totalCnt}`;
+        document.getElementById('stat-easy').innerText = `Easy : ${easyCount}`;
+        document.getElementById('stat-medium').innerText = `Medium : ${mediumCnt}`;
+        document.getElementById('stat-hard').innerText = `Hard : ${hardCnt}`;
+    }
+    function updateSectionToggleOnScreen() {
+        let arr = document.querySelectorAll('.section-title');
+        let dropdown = document.getElementById('filter-section');
+        arr.forEach(a => {
+            const option = document.createElement('option');
+            option.value = a.textContent;
+            option.dataset.sectionId = a.textContent;
+            option.className = 'sectionoption';
+            option.textContent = a.textContent;
+            dropdown.append(option);
+        });
+        executeSectionClick(dropdown);
+    }
+    function executeSectionClick(dropdown) {
+        dropdown.addEventListener('change', (e) => {
+            const selectedSectionName = e.target.value;
+
+            const allSections = document.querySelectorAll('.dsa-section');
+            allSections.forEach(section => {
+                // 4. Find the title text of the current section in the loop
+                // We use .textContent to get the actual name, like "Arrays"
+                const sectionTitle = section.querySelector('.section-title').textContent;
+
+                
+                // If the selected value is "ALL" OR if the section's title matches the selected name...
+                if (selectedSectionName === 'ALL' || sectionTitle === selectedSectionName) {
+                    // ...then show it.
+                    section.style.display = 'block'; // 'block' is the default for <section>
+                } else {
+                    // ...otherwise, hide it.
+                    section.style.display = 'none';
+                }
+            });
+        });
+    }
+
+
     // Initial data load
     loadAndRenderAllQuestions();
-});
+    });
