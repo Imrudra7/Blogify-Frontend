@@ -2,34 +2,34 @@
 /* 1) THEME VARIABLES        */
 /* ------------------------- */
 :root {
-    --bg: #f6f7fb;
-    --card: #ffffff;
+    --bg: #909ac2;
+    --card: #cee0f6b9;
     --text: #263238;
     --muted: #5c6b7a;
-    --border: #e7ecf3;
+    --border: #bfd1ea;
     --shadow: rgba(0, 0, 0, 0.06);
-    --link: #2b6cb0;
+    --link: #1177e5;
+    --question: rgb(164, 173, 226);
+    --easy: #299b06;
+    --medium: #d78e3a;
+    --hard: #f50404;
 
-    --easy: #2ea043;
-    --medium: #d97706;
-    --hard: #c53030;
-
-    --chip-bg: #f1f5f9;
-    --chip: #475569;
+    --chip-bg: #744151;
+    --chip: #f8f8f8c7;
 
     --btn-bg: #eef2f7;
     --btn-text: #1f2937;
 }
 
 [data-theme="dark"] {
-    --bg: #0f172a;
+    --bg: #384a74;
     --card: #111827;
     --text: #e5e7eb;
     --muted: #9aa3af;
     --border: #1f2937;
     --shadow: rgba(0, 0, 0, 0.25);
     --link: #60a5fa;
-
+    --question: rgb(55, 58, 76);
     --chip-bg: #1f2937;
     --chip: #cbd5e1;
 
@@ -53,7 +53,7 @@ body {
     margin: 0;
     background: var(--bg);
     color: var(--text);
-    font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif;
+    font-family:   Cambria, Cochin, Georgia, Times, 'Times New Roman', serif ;
     line-height: 1.4;
 }
 
@@ -295,7 +295,7 @@ body {
     align-items: center;
     padding: 12px 10px;
     border-bottom: 1px solid var(--border);
-    background: #fff;
+    background: var(--question);
     /* halka background for card effect */
     border-radius: 8px;
     /* thoda smooth corner */
@@ -307,7 +307,7 @@ body {
 }
 
 .question-item:hover {
-    background: #f9f9f9;
+    background: #e7bdbd;
     transform: translateY(-2px);
 }
 
