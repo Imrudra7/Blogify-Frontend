@@ -416,8 +416,14 @@ body {
     padding: 5px 10px 0px;
 }
 
+#monthName {
+    margin: 0;
+    padding: 3p
+}
+
 .datesContainer {
     display: flex;
     gap: 5px;
+    padding: 0px 0px 8px 0px;
     flex-wrap: wrap;
 }
