@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     const token = localStorage.getItem('authToken');
     let userStr = localStorage.getItem("user");
-
+    let now = new Date();
 
     let userObj = JSON.parse(userStr);
 
@@ -229,6 +229,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (questionForm) {
         questionForm.addEventListener("submit", handleFormSubmit);
     }
+    const streak = document.getElementsByClassName('streakContainer');
+
     /**
      * Fetches user-specific progress (which questions are done)
      * and applies checkbox states accordingly.
@@ -308,7 +310,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 // We use .textContent to get the actual name, like "Arrays"
                 const sectionTitle = section.querySelector('.section-title').textContent;
 
-                
+
                 // If the selected value is "ALL" OR if the section's title matches the selected name...
                 if (selectedSectionName === 'ALL' || sectionTitle === selectedSectionName) {
                     // ...then show it.
@@ -322,6 +324,117 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
+    async function getStreakFromBack(email) {
+        let listOfDays = new Array();
+        const result = await fetch(`${BASE_URL}/getStreakDays`, {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                email
+            })
+        });
+        if (!result.ok) {
+            console.log("Something went wrong");
+            return listOfDays;
+        }
+        const data = await result.json();
+        listOfDays = data.object ?? [];
+        return listOfDays;
+    }
+
+    function loadStreakOnFront(daysList) {
+        //console.log("Loading Streak on FRont", daysList);
+
+        const streakData = {};
+
+        daysList.forEach(dateStr => {
+            const date = new Date(dateStr);
+            // Normalize to start of day (UTC)
+            const dayKey = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+            const timestamp = Math.floor(dayKey.getTime() / 1000); // in seconds
+
+
+            // if (streakData[timestamp]) {
+            //     streakData[timestamp] += 1;
+            // } else {
+            //     streakData[timestamp] = 1;
+            // }
+            streakData[timestamp] = true;
+        });
+
+
+        const heatmap = document.getElementById('streak-heatmap');
+        let monthName = now.toLocaleString('default', { month: 'long' }); // e.g. "September"
+        let year = now.getFullYear();
+        let headDiv = document.createElement('div');
+        headDiv.id = "headDiv";
+
+        // 🔹 Month-Year Heading
+        let heading = document.createElement('h3');
+        heading.id = "monthName";
+        heading.innerText = `${monthName} ${year}`;
+        headDiv.appendChild(heading);
+
+        // 🔹 Dates container
+        let datesDiv = document.createElement('div');
+        datesDiv.classList.add("datesContainer");
+
+        let numberOfDaysinCurrentMonth = daysInThisMonth();
+        for (let i = 1; i <= numberOfDaysinCurrentMonth; i++) {
+            let input = document.createElement('input');
+            input.type = 'checkbox';
+            input.id = `day-${i}`;
+            input.classList.add("dayClass");
+            input.disabled = true;
+            input.style.display = "none"; // hide raw checkbox
+
+            let fire = document.createElement('span');
+            fire.innerText = "🔥";
+            fire.style.display = "none";
+
+            let label = document.createElement('label');
+            label.htmlFor = input.id;
+            label.innerText = i;
+
+            let dayKey = new Date(now.getFullYear(), now.getMonth(), i);
+            let timestamp = Math.floor(dayKey.getTime() / 1000);
+
+            if (streakData[timestamp]) {
+                label.style.display = "none";
+                fire.style.display = "inline";
+            }
+
+
+            datesDiv.appendChild(input);
+            datesDiv.appendChild(fire);
+            datesDiv.appendChild(label);
+
+
+        }
+
+        headDiv.appendChild(datesDiv);
+        heatmap.appendChild(headDiv);
+
+    }
+    //console.log("Painting done :", cal);
+
+    function daysInThisMonth() {
+        return new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+    }
+
     // Initial data load
     loadAndRenderAllQuestions();
-    });
+    if (streak && token && CURRENT_USER_EMAIL) {
+        async function loadStreak() {
+            let streakDays = await getStreakFromBack(CURRENT_USER_EMAIL);
+
+            if (streakDays && streakDays.length > 0) {
+                // console.log("Streaks : ", streakDays);
+                const streak_heatmap = document.getElementById("streak-heatmap");
+                if (streak_heatmap)
+                    loadStreakOnFront(streakDays);
+            }
+        }
+        loadStreak();
+    }
+});

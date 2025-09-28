@@ -6,6 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>DSA Tracker</title>
     <link rel="stylesheet" href="dsacss.css" />
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/cal-heatmap/cal-heatmap.css">
+    <script src="https://unpkg.com/cal-heatmap/dist/cal-heatmap.min.js"></script>
+
 </head>
 
 <body>
@@ -28,16 +32,6 @@
         <div class="toolbar">
             <div class="filters">
                 <label class="filter">
-                    <span>Difficulty:</span>
-                    <select id="filter-difficulty">
-                        <option value="ALL">All</option>
-                        <option value="Easy">Easy</option>
-                        <option value="Medium">Medium</option>
-                        <option value="Hard">Hard</option>
-                    </select>
-                </label>
-
-                <label class="filter">
                     <span>Section:</span>
                     <select id="filter-section">
                         <option value="ALL" class="sectionoption">All</option>
@@ -52,6 +46,10 @@
                 <span id="stat-medium" class="badge medium">Medium: 0</span>
                 <span id="stat-hard" class="badge hard">Hard: 0</span>
             </div>
+        </div>
+        <div class="streakContainer">
+            <!-- Will show how many days user logged in -->
+            <div id="streak-heatmap"></div>
         </div>
 
         <!-- Status -->
